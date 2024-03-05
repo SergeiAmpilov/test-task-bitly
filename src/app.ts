@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import express, { Express } from 'express';
 import { Server } from 'http';
 import { inject, injectable } from 'inversify';
-import { TYPES } from './logger/types';
+import { TYPES } from './types';
 import { ILogger } from './logger/logger.interface';
 
 @injectable()

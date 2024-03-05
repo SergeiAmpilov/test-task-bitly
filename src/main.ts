@@ -3,7 +3,9 @@ import { ContainerModule } from 'inversify/lib/container/container_module';
 import { ILogger } from './logger/logger.interface';
 import { App } from './app';
 import { LoggerService } from './logger/logger.service';
-import { TYPES } from './logger/types';
+import { TYPES } from './types';
+import { IConfigService } from './config/config.service.interface';
+import { ConfigService } from './config/config.service';
 
 
 
@@ -16,6 +18,8 @@ export interface IBootstrapReturn {
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<App>(TYPES.Application).to(App).inSingletonScope();
 	bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
+	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
+
 	// bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExeptionFilter).inSingletonScope();
 	// bind<IUserController>(TYPES.UsersController).to(UsersController).inSingletonScope();
 	// bind<IUserService>(TYPES.UsersService).to(UserService).inSingletonScope();
