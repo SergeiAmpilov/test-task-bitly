@@ -26,7 +26,7 @@ export class UsersController extends BaseController implements IUserController {
 	) {
 		super(loggerService);
 
-				const routesDate: IControllerRoute[] = [
+		const routesDate: IControllerRoute[] = [
 			{
 				path: '/login',
 				method: 'post',

@@ -10,6 +10,7 @@ import { ExeptionFilter } from './errors/exeption.filter';
 import { IConfigService } from './config/config.service.interface';
 import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
+import { LinksController } from './links/links.controller';
 
 @injectable()
 export class App {
@@ -24,6 +25,8 @@ export class App {
 		@inject(TYPES.ExeptionFilter) private exeptionFilter: ExeptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
+		@inject(TYPES.LinksController) private linksController: LinksController,
+		
 	) {
 		this.app = express();
 		this.port = process.env.PORT ? Number(process.env.PORT) : 8000;
@@ -33,13 +36,14 @@ export class App {
 	}
 
 	useMiddleware(): void {
-		this.app.use(json());
+		this.app.use(json()); // body-parser
 		const authMiddleware = new AuthMiddleware( this.configService.get('SECRET')	);
 		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
 	useRoutes(): void {
 		this.app.use('/users', this.usersController.router);
+		this.app.use(this.linksController.router);
 	}
 
 	useExeptionFilters(): void {
@@ -51,7 +55,7 @@ export class App {
 		this.useMiddleware();
 		this.useRoutes();
 		this.useExeptionFilters();
-		
+
 		await this.prismaService.connect();
 
 		this.server = this.app.listen(this.port, () => {
