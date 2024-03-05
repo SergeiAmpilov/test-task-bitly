@@ -6,6 +6,15 @@ import { LoggerService } from './logger/logger.service';
 import { TYPES } from './types';
 import { IConfigService } from './config/config.service.interface';
 import { ConfigService } from './config/config.service';
+import { IExeptionFilter } from './errors/exeption.filter.interface';
+import { IUserController } from './users/users.controller.interface';
+import { IUserService } from './users/users.service.interface';
+import { ExeptionFilter } from './errors/exeption.filter';
+import { UsersController } from './users/users.controller';
+import { UserService } from './users/users.service';
+import { PrismaService } from './database/prisma.service';
+import { IUsersRepository } from './users/users.repository.interface';
+import { UsersRepository } from './users/users.repository';
 
 
 
@@ -18,14 +27,12 @@ export interface IBootstrapReturn {
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<App>(TYPES.Application).to(App).inSingletonScope();
 	bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
+	bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExeptionFilter).inSingletonScope();
+	bind<IUserController>(TYPES.UsersController).to(UsersController).inSingletonScope();
+	bind<IUserService>(TYPES.UsersService).to(UserService).inSingletonScope();
 	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
-
-	// bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExeptionFilter).inSingletonScope();
-	// bind<IUserController>(TYPES.UsersController).to(UsersController).inSingletonScope();
-	// bind<IUserService>(TYPES.UsersService).to(UserService).inSingletonScope();
-	// bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
-	// bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
-	// bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
+	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
+	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 });
 
 
