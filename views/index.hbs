@@ -2,3 +2,156 @@
 	<h1>Bit.ly clone</h1>
 
 </section>
+
+<section class="container my-4" id="registration">
+	<div>
+		<h2>Registration</h2>
+	</div>
+	
+	
+	<form id="registration-form">
+			<label for="name">
+				Ваше имя (более 6 символов):
+				<input type="text" name="name" required min="6">
+			</label>
+			<label for="email">
+				Email:
+				<input type="email" name="email" required>
+			</label>
+			<label for="password">
+				Password:
+				<input type="password" name="password" required>
+			</label>
+			<button type="submit">Submit!</button>
+	</form>
+</section>
+
+<section class="container" id="authorization">
+	<div>
+		<h2>Authorization</h2>
+	</div>
+
+	<form action="" id="authorization-form">
+		<label for="email">
+			Email:
+			<input type="email" name="email" required>
+		</label>
+		<label for="password">
+			Password:
+			<input type="password" name="password" required>
+		</label>
+		<button type="submit">Auth</button>
+	</form>
+</section>
+
+
+<section class="container" id="link">
+	<div>
+		<h2>Make link</h2>
+	</div>
+	<form action="" id="link-form">
+		<label for="link">
+			Source Link:
+			<input type="text" name="link" required>
+		</label>
+		<button type="submit">Generate link</button>
+	</form>
+	<div id="link-result"></div>
+</section>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		console.log('doc loaded');
+
+		document.getElementById('registration-form').addEventListener('submit', function(evt){
+			evt.preventDefault();
+
+			const bodyObj = {};
+			for (const pair of new FormData(evt.target)) {
+				bodyObj[ pair[0] ] = pair[1];
+			}
+
+			fetch('/users/register', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+					},
+					body: JSON.stringify(bodyObj)
+			})
+			.then(function(res) { return res.json() })
+			.then(function(data) {
+				if (data) {
+					console.log('registration was successfull', data);
+					document.getElementById('registration').classList.add('d-none');
+				}
+			})
+			.catch(function(error) { console.error(error.message) })
+
+		})
+
+		document
+			.getElementById('authorization-form')
+			.addEventListener('submit', function(evt) {
+				evt.preventDefault();
+				const bodyObj = {};
+				for (const pair of new FormData(evt.target)) {
+					bodyObj[pair[0]] = pair[1];
+				}
+
+				fetch('/users/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+					},
+					body: JSON.stringify(bodyObj)
+				})
+					.then(function (res) { return res.json() })
+					.then(function (data) {
+						if (data) {
+							console.log('login was successfull', data);
+							document.getElementById('authorization').classList.add('d-none');
+
+							// data.jwt - это и есть токен
+							localStorage.setItem('token', data.jwt);
+						}
+					})
+					.catch(function (error) { console.error(error.message) })
+			})
+
+		document
+			.getElementById('link-form')
+			.addEventListener('submit', function(evt) {
+				evt.preventDefault();
+
+				const bodyObj = {};
+				for (const pair of new FormData(evt.target)) {
+					bodyObj[pair[0]] = pair[1];
+				}
+
+				fetch('/generate', {
+					method: 'POST',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('token'),
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+					},
+					body: JSON.stringify(bodyObj)
+				})
+					.then(function (res) { return res.json() })
+					.then(function (data) {
+						if (data) {
+							console.log('link was done', data);
+
+							document.getElementById('link-result').innerHTML = 
+								`<a href="/${data.shortlink}" target="_blank">${data.shortlink}</a>`;
+
+						}
+					})
+					.catch(function (error) { console.error(error.message) })
+			})
+	});
+
+
+</script>

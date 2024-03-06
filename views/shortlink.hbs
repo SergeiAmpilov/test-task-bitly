@@ -1,0 +1,37 @@
+<section class="container">
+	<h1>Short link</h1>
+	<div id="short-link">
+		{{ shortlink }}
+	</div>
+</section>
+
+
+<script>
+
+	document.addEventListener('DOMContentLoaded', function () {
+
+		const shortlink = document.getElementById('short-link').innerText.trim();
+		console.log(shortlink);
+		
+
+
+		if (shortlink) {
+			fetch('/findbylink', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+				},
+				body: JSON.stringify({ shortlink: shortlink })
+			})
+				.then(function (res) { return res.json() })
+				.then(function (data) {
+					if (data) {
+						window.location.replace(data.link);
+					}
+				})
+				.catch(function (error) { console.error(error.message) })
+		}
+
+	})
+</script>

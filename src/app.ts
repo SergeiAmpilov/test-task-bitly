@@ -13,6 +13,7 @@ import { LinksController } from './links/links.controller';
 import mongoose from 'mongoose';
 import path from 'path';
 import { engine } from 'express-handlebars';
+import bodyParser from 'body-parser';
 
 @injectable()
 export class App {
@@ -39,7 +40,7 @@ export class App {
 	}
 
 	useMiddleware(): void {
-		this.app.use(json()); // body-parser
+		// this.app.use(json()); // body-parser
 		const authMiddleware = new AuthMiddleware( this.configService.get('SECRET')	);
 		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
@@ -47,6 +48,9 @@ export class App {
 	useRoutes(): void {
 		this.app.use('/users', this.usersController.router);
 		this.app.use(this.linksController.router);
+		this.app.get('/:shortlink', (req, res, next) => {
+			res.render('shortlink', { shortlink: req.params.shortlink})
+		})
 		this.app.use('/', (req, res, next) => res.render('index') )
 	}
 
@@ -58,6 +62,14 @@ export class App {
     this.app.use(
       express.static(path.join(path.dirname(__dirname), 'public' ))
     );
+  }
+
+	useBodyParse() {
+    // parse application/x-www-form-urlencoded
+    this.app.use(bodyParser.urlencoded({ extended: false }))
+
+    // parse application/json
+    this.app.use(bodyParser.json())
   }
 
 	setRender() {
@@ -80,6 +92,7 @@ export class App {
 			}
 		}
 
+		this.useBodyParse();
 		this.useMiddleware();
 		this.useRoutes();
 		this.useExeptionFilters();
