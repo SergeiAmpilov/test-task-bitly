@@ -11,6 +11,8 @@ import { IConfigService } from './config/config.service.interface';
 import { AuthMiddleware } from './common/auth.middleware';
 import { LinksController } from './links/links.controller';
 import mongoose from 'mongoose';
+import path from 'path';
+import { engine } from 'express-handlebars';
 
 @injectable()
 export class App {
@@ -45,11 +47,27 @@ export class App {
 	useRoutes(): void {
 		this.app.use('/users', this.usersController.router);
 		this.app.use(this.linksController.router);
+		this.app.use('/', (req, res, next) => res.render('index') )
 	}
 
 	useExeptionFilters(): void {
 		this.app.use(this.exeptionFilter.catch.bind(this.exeptionFilter));
 	}
+
+	useStatic() {
+    this.app.use(
+      express.static(path.join(path.dirname(__dirname), 'public' ))
+    );
+  }
+
+	setRender() {
+    this.app.engine('hbs', engine({
+      defaultLayout: 'main',
+      extname: 'hbs'
+    }));
+    this.app.set('view engine', 'hbs');
+    this.app.set('views', './views');
+  }
 
 	public async init(): Promise<void> {
 
@@ -65,6 +83,9 @@ export class App {
 		this.useMiddleware();
 		this.useRoutes();
 		this.useExeptionFilters();
+    this.useStatic();
+		this.setRender();
+
 
 		this.server = this.app.listen(this.port, () => {
 			this.logger.log(

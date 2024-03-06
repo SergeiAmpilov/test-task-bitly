@@ -3,3 +3,8 @@
 .env
 /prisma/dev.db
 /prisma/dev.db-journal
+
+/public/*.xml
+/public/robots.txt
+public/sitemap.xml
+/public/sitemap.xml
