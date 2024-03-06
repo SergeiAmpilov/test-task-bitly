@@ -4,4 +4,4 @@
 
 1. Install: npm install
 
-2. Start app: npm run start
+2. Start app: npm run build && npm run start
