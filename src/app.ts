@@ -8,15 +8,16 @@ import { ILogger } from './logger/logger.interface';
 import { UsersController } from './users/users.controller';
 import { ExeptionFilter } from './errors/exeption.filter';
 import { IConfigService } from './config/config.service.interface';
-import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
 import { LinksController } from './links/links.controller';
+import mongoose from 'mongoose';
 
 @injectable()
 export class App {
 	app: Express;
 	port: number;
 	server: Server;
+  dbName: string;
 
 
 	constructor(
@@ -24,12 +25,12 @@ export class App {
 		@inject(TYPES.UsersController) private usersController: UsersController,
 		@inject(TYPES.ExeptionFilter) private exeptionFilter: ExeptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
-		@inject(TYPES.PrismaService) private prismaService: PrismaService,
 		@inject(TYPES.LinksController) private linksController: LinksController,
 		
 	) {
 		this.app = express();
 		this.port = process.env.PORT ? Number(process.env.PORT) : 8000;
+    this.dbName = process.env?.DB_NAME ? process.env.DB_NAME : 'bitly';
 		this.logger = logger;
 		this.usersController = usersController;
 		this.exeptionFilter = exeptionFilter;
@@ -52,11 +53,18 @@ export class App {
 
 	public async init(): Promise<void> {
 
+		try {
+	    await mongoose.connect(`mongodb://0.0.0.0:27017/${this.dbName}`);
+			this.logger.log('[mongodb] connected to database');
+		} catch (e) {
+			if (e instanceof Error) {
+				this.logger.error(`[mongodb] ${e.message}`)
+			}
+		}
+
 		this.useMiddleware();
 		this.useRoutes();
 		this.useExeptionFilters();
-
-		await this.prismaService.connect();
 
 		this.server = this.app.listen(this.port, () => {
 			this.logger.log(

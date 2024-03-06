@@ -5,8 +5,6 @@ import { inject, injectable } from 'inversify';
 import { ILogger } from '../logger/logger.interface';
 import { TYPES } from '../types';
 import { Request, Response, NextFunction } from 'express';
-import { ParamsDictionary } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
 import { GenerateLinkDto } from './dto/generate-link.dto';
 import { IControllerRoute } from '../common/route.interface';
 import { AuthGuard } from '../common/auth.guard';

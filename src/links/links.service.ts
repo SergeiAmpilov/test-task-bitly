@@ -1,40 +1,26 @@
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { ILinksService } from './links.service.interface';
-import { LinkModel } from '@prisma/client';
-import { TYPES } from '../types';
-import { PrismaService } from '../database/prisma.service';
+import { LinksModel } from './links.model';
 
 @injectable()
 export class LinksService implements ILinksService {
 
-	constructor(
-    @inject(TYPES.PrismaService) private prismaService: PrismaService,
-	) {}
+	constructor() {}
 
-	async generate(userId: number, link: string): Promise<LinkModel | null> {
+	async generate(userId: number, link: string) {
 		const shortlink = this.generateShortLink(); /* need to add checkup - if already exists */
-		return this.prismaService.client.linkModel.create({
-			data: {
-				link,
-				shortlink,
-				userid: userId,
-			}
+		return LinksModel.create({
+			link,
+			shortlink,
+			userid: userId,
 		});
 	};
 
-	async findByLink(shortlink: string): Promise<LinkModel | null> {
-		return this.prismaService.client.linkModel.findFirst({
-			where: {
-				shortlink
-			}
-		});
+	async findByLink(shortlink: string) {
+		return LinksModel.findOne({ shortlink }).exec();
 	};
-	async findByUser(userId: number): Promise<LinkModel[]> {
-		return this.prismaService.client.linkModel.findMany({
-			where: {
-				userid: userId
-			}
-		});
+	async findByUser(userId: number) {				
+		return LinksModel.find({ userid: userId }).exec();
 	};
 
 	protected generateShortLink() {

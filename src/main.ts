@@ -12,7 +12,6 @@ import { IUserService } from './users/users.service.interface';
 import { ExeptionFilter } from './errors/exeption.filter';
 import { UsersController } from './users/users.controller';
 import { UserService } from './users/users.service';
-import { PrismaService } from './database/prisma.service';
 import { IUsersRepository } from './users/users.repository.interface';
 import { UsersRepository } from './users/users.repository';
 import { ILinksController } from './links/links.controller.interface';
@@ -35,7 +34,6 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IUserController>(TYPES.UsersController).to(UsersController).inSingletonScope();
 	bind<IUserService>(TYPES.UsersService).to(UserService).inSingletonScope();
 	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
-	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
 	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 	bind<ILinksController>(TYPES.LinksController).to(LinksController).inSingletonScope();
 	bind<ILinksService>(TYPES.LinksService).to(LinksService).inSingletonScope();
