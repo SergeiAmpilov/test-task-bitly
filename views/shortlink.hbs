@@ -11,9 +11,6 @@
 	document.addEventListener('DOMContentLoaded', function () {
 
 		const shortlink = document.getElementById('short-link').innerText.trim();
-		console.log(shortlink);
-		
-
 
 		if (shortlink) {
 			fetch('/findbylink', {

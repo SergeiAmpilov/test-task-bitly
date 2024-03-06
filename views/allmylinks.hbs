@@ -1,0 +1,41 @@
+<section class="container my-4" >
+	<h1>all my links</h1>
+	<div id="link-list"></div>
+</section>
+
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		fetch('/findbyuser', {
+			method: 'POST',
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem('token'),
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+			},
+		})
+			.then(function (res) { return res.json() })
+			.then(function (data) {
+				if (data && data.links) {
+					console.log('link was done', data);
+
+					let newHtml = '';
+					data.links.forEach(function(link) {
+						console.log(link.shortlink, link.link);
+						newHtml += `<div class="row">
+								<div class="col-3">
+									${link.shortlink}
+								</div>
+								<div class="col-9">
+									<a href="${link.link}" target="_blank">${link.link}</a>
+								</div>
+						</div>`;
+					});
+
+					document.getElementById('link-list').innerHTML = newHtml;
+
+				}
+			})
+			.catch(function (error) { console.error(error.message) })
+	});
+</script>

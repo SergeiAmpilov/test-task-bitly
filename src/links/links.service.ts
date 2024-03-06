@@ -7,7 +7,7 @@ export class LinksService implements ILinksService {
 
 	constructor() {}
 
-	async generate(userId: number, link: string) {
+	async generate(userId: string, link: string) {
 		const shortlink = this.generateShortLink(); /* need to add checkup - if already exists */
 		return LinksModel.create({
 			link,
@@ -19,8 +19,8 @@ export class LinksService implements ILinksService {
 	async findByLink(shortlink: string) {
 		return LinksModel.findOne({ shortlink }).exec();
 	};
-	async findByUser(userId: number) {				
-		return LinksModel.find({ userid: userId }).exec();
+	async findByUser(userid: string) {				
+		return LinksModel.find({ userid }).exec();
 	};
 
 	protected generateShortLink() {

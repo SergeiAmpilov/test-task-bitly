@@ -14,6 +14,7 @@ import mongoose from 'mongoose';
 import path from 'path';
 import { engine } from 'express-handlebars';
 import bodyParser from 'body-parser';
+import { ILinksService } from './links/links.service.interface';
 
 @injectable()
 export class App {
@@ -29,6 +30,7 @@ export class App {
 		@inject(TYPES.ExeptionFilter) private exeptionFilter: ExeptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.LinksController) private linksController: LinksController,
+		@inject(TYPES.LinksService) private readonly linksService: ILinksService,
 		
 	) {
 		this.app = express();
@@ -48,6 +50,10 @@ export class App {
 	useRoutes(): void {
 		this.app.use('/users', this.usersController.router);
 		this.app.use(this.linksController.router);
+		this.app.get('/allmylinks', async (req, res, next) => {
+			res.render('allmylinks');
+		})
+		
 		this.app.get('/:shortlink', (req, res, next) => {
 			res.render('shortlink', { shortlink: req.params.shortlink})
 		})
