@@ -17,6 +17,8 @@ import { IUsersRepository } from './users/users.repository.interface';
 import { UsersRepository } from './users/users.repository';
 import { ILinksController } from './links/links.controller.interface';
 import { LinksController } from './links/links.controller';
+import { ILinksService } from './links/links.service.interface';
+import { LinksService } from './links/links.service';
 
 
 
@@ -36,6 +38,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
 	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 	bind<ILinksController>(TYPES.LinksController).to(LinksController).inSingletonScope();
+	bind<ILinksService>(TYPES.LinksService).to(LinksService).inSingletonScope();
 });
 
 

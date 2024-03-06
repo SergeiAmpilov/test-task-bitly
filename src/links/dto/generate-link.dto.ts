@@ -1,4 +1,4 @@
-import { IsUrl } from 'class-validator';
+import { IsString, IsUrl } from 'class-validator';
 
 export class GenerateLinkDto {
 	@IsUrl()
